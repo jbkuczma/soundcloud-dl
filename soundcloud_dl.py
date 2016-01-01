@@ -13,7 +13,7 @@ HELP_MESSAGE = '''
 
 * Only one song can be downloaded at a time. Please use the following format: *
 ----------------------------------------------------
-* python3 soundcloudDownloader.py [soundcloud url] *
+* python3 soundcloud-dl.py [soundcloud url] *
 ----------------------------------------------------
 * This was developed entirely for educational purposes *
 
