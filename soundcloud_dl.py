@@ -20,28 +20,26 @@ HELP_MESSAGE = '''
 * Thank you and enjoy! *
             '''
 
-def setTrack():
-    global TRACK
-    TRACK = client.get('/resolve', url=SONG_TO_DOWNLOAD)
-    return TRACK
+def getTrack():
+    return client.get('/resolve', url=SONG_TO_DOWNLOAD)
 
 
 def printInfo():
     print("##################################")
-    print(setTrack().title)
-    print(setTrack().user["username"])
-    print("Genre: " + setTrack().genre)
-    print("Plays: " + str(setTrack().playback_count))
-    print("Favorites: " + str(setTrack().favoritings_count))
-    print("BPM: " + str(setTrack().bpm))
-    print("ID: " + str(setTrack().id))
-    print("License: " + setTrack().license)
+    print(getTrack().title)
+    print(getTrack().user["username"])
+    print("Genre: " + getTrack().genre)
+    print("Plays: " + str(getTrack().playback_count))
+    print("Favorites: " + str(getTrack().favoritings_count))
+    print("BPM: " + str(getTrack().bpm))
+    print("ID: " + str(getTrack().id))
+    print("License: " + getTrack().license)
     print("##################################")
 
 
 def makeStreamURL():
     global STREAM_URL
-    STREAM_URL += "http://api.soundcloud.com/tracks/%s/stream?client_id=%s" % (setTrack().id, CLIENT_ID)
+    STREAM_URL += "http://api.soundcloud.com/tracks/%s/stream?client_id=%s" % (getTrack().id, CLIENT_ID)
     return STREAM_URL
 
 
@@ -50,7 +48,7 @@ def download():
         os.makedirs(FOLDER_LOCATION)
     os.chdir(FOLDER_LOCATION)
     # path = os.path.join(FOLDER_LOCATION, setTrack().user["username"] + " - " + setTrack().title + ".mp3") #will add username of who uploaded the track to the name of the file
-    path = os.path.join(FOLDER_LOCATION, setTrack().title + ".mp3")
+    path = os.path.join(FOLDER_LOCATION, getTrack().title + ".mp3")
     if os.path.isfile(path):
         print("Skipped. This file already exists")
     else:
