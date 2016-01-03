@@ -61,7 +61,7 @@ def download():
 
 
 if __name__ == "__main__":
-    if (len(sys.argv) == 2):  # a link was provided
+    if (len(sys.argv) == 2):  #link was provided
         SONG_TO_DOWNLOAD = sys.argv[1]
         # printInfo() #optional
         download()
