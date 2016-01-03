@@ -24,6 +24,14 @@ def getTrack():
     return client.get('/resolve', url=SONG_TO_DOWNLOAD)
 
 
+def isValid(url):
+    if "soundcloud.com" in url:
+        return True
+    print("You did not provide a valid SoundCloud url. Please run again with a valid url")
+    return False
+    exit(0)
+
+
 def printInfo():
     print("##################################")
     print(getTrack().title)
@@ -63,7 +71,9 @@ def download():
 if __name__ == "__main__":
     if (len(sys.argv) == 2):  #link was provided
         SONG_TO_DOWNLOAD = sys.argv[1]
-        # printInfo() #optional
-        download()
+        if isValid(SONG_TO_DOWNLOAD):
+            # printInfo() #optional
+            makeStreamURL()
+            download()
     else:
         print(HELP_MESSAGE)
