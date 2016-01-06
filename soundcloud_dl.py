@@ -19,6 +19,18 @@ HELP_MESSAGE = '''
 
 * Thank you and enjoy! *
             '''
+FAILED_MESSAGE = '''
+If a song does not download it could because of the following:
+------------------------------------------------------------------------------
+Email response from SoundCloud on this issue:
+The developers have let me know that the problems you are having is
+due to issues with RTMP. Currently certain content on SoundCloud is
+using a secure streaming method called RTMP. To explain RTMP, even
+if a track is set to public and streamable by the artist, if the artist
+is under a major label, this label can further control those streaming
+permissions. So, it looks like it should stream correctly, however it doesn't.
+------------------------------------------------------------------------------
+'''
 
 def getTrack():
     return client.get('/resolve', url=SONG_TO_DOWNLOAD)
@@ -66,6 +78,7 @@ def download():
             print("Download complete!")
         except:
             print("Download failed.")
+            print(FAILED_MESSAGE)
 
 
 if __name__ == "__main__":
