@@ -2,12 +2,16 @@ import urllib
 import soundcloud
 import os
 import sys
+import requests
+from mutagen.mp3 import MP3, EasyMP3
+from mutagen.id3 import ID3 as OldID3
+from mutagen.id3 import APIC
 
 CLIENT_ID = "***" #your client ID
+FOLDER_LOCATION = "***" #where you want the file saved to
 client = soundcloud.Client(client_id=CLIENT_ID)
 SONG_TO_DOWNLOAD = ""
 STREAM_URL = ""
-FOLDER_LOCATION = "***" #where you want the file saved to
 HELP_MESSAGE = '''
 * SoundCloud Downloader *
 
@@ -15,8 +19,6 @@ HELP_MESSAGE = '''
 ----------------------------------------------------
 * python3 soundcloud_dl.py [soundcloud url] *
 ----------------------------------------------------
-* This was developed entirely for educational purposes *
-
 * Thank you and enjoy! *
             '''
 FAILED_MESSAGE = '''
@@ -63,6 +65,38 @@ def makeStreamURL():
     return STREAM_URL
 
 
+def addTags(file):
+    try:
+        audio = EasyMP3(file)
+        audio.tags = None
+        audio["artist"] = getTrack().user["username"] #depending on who uploaded the song, this may not always be the actual artist of the song
+        audio["title"] = getTrack().title
+        audio["genre"] = getTrack().genre
+        audio.save()
+        artworkURL = getTrack().artwork_url  #gets url of artwork for song provided...
+        if "large" in artworkURL:  #...but we need to replace "large" with "t500x500"...
+            artworkURL = artworkURL.replace("large", "t500x500")  #...to get a decent sized photo that isn't pixelated for the cover art of the mp3
+        image_data = requests.get(artworkURL).content
+        mime = 'image/jpeg'
+        if '.jpg' in artworkURL:
+            mime = 'image/jpeg'
+        if '.png' in artworkURL:
+            mime = 'image/png'
+        audio = MP3(file, ID3=OldID3)
+        audio.tags.add(
+                APIC(
+                    encoding=3,  #3 is for utf-8
+                    mime=mime,
+                    type=3,  #3 is for the cover image
+                    desc='Cover',
+                    data=image_data
+                )
+            )
+        audio.save()
+    except Exception as e:
+        print(e)
+
+
 def download():
     if not os.path.exists(FOLDER_LOCATION):
         os.makedirs(FOLDER_LOCATION)
@@ -75,6 +109,7 @@ def download():
         try:
             print("Starting download")
             urllib.request.urlretrieve(STREAM_URL, path)
+            addTags(path)
             print("Download complete!")
         except:
             print("Download failed.")
