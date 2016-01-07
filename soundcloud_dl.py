@@ -34,10 +34,13 @@ permissions. So, it looks like it should stream correctly, however it doesn't.
 ------------------------------------------------------------------------------
 '''
 
+
+# helper function that is used to obtain information about the song (title, artist, genre, etc).
 def getTrack():
     return client.get('/resolve', url=SONG_TO_DOWNLOAD)
 
 
+# check if the url provided is a valid SoundCloud link
 def isValid(url):
     if "soundcloud.com" in url:
         return True
@@ -46,6 +49,7 @@ def isValid(url):
     exit(0)
 
 
+# displays info regarding the url provided. This is completely optional and will not affect the outcome of the downloaded file
 def printInfo():
     print("##################################")
     print(getTrack().title)
@@ -59,12 +63,14 @@ def printInfo():
     print("##################################")
 
 
+# creates the stream url from the link provided. This url is then used later to download the song
 def makeStreamURL():
     global STREAM_URL
     STREAM_URL += "http://api.soundcloud.com/tracks/%s/stream?client_id=%s" % (getTrack().id, CLIENT_ID)
     return STREAM_URL
 
 
+# applies ID3 tags and artwork to the mp3 file based on what is provided from SoundCloud
 def addTags(file):
     try:
         audio = EasyMP3(file)
@@ -97,6 +103,7 @@ def addTags(file):
         print(e)
 
 
+# creates save destination if that directory doesn't exist. Proceeds to download the audio file
 def download():
     if not os.path.exists(FOLDER_LOCATION):
         os.makedirs(FOLDER_LOCATION)
