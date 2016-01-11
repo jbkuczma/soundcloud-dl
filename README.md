@@ -3,9 +3,10 @@ Easily download any SoundCloud track even if a download link is not provided.
 
 ##*Requirements*
     This script uses python3
-  SoundCloud's python wrapper is necessary. 
+  SoundCloud's python wrapper and Mutagen are necessary. 
   
     pip install soundcloud
+    pip install mutagen
   You will also need to have a Client ID from SoundCloud. To receive one you need to create an app [here](http://soundcloud.com/you/apps/new). Once you have created an app and received your Client ID, download the source code and edit the code so your Client ID is used along with the folder location of where you want the files saved to.
 
 ##*Usage*
