@@ -12,6 +12,7 @@ FOLDER_LOCATION = "***" #where you want the file saved to
 client = soundcloud.Client(client_id=CLIENT_ID)
 SONG_TO_DOWNLOAD = ""
 STREAM_URL = ""
+URLS_TO_DOWNLOAD = []
 HELP_MESSAGE = '''
 * SoundCloud Downloader *
 
@@ -40,6 +41,13 @@ def getTrack():
     return client.get('/resolve', url=SONG_TO_DOWNLOAD)
 
 
+# creates the stream url from the link provided. This url is then used later to download the song
+def makeStreamURL():
+    global STREAM_URL
+    STREAM_URL += "http://api.soundcloud.com/tracks/%s/stream?client_id=%s" % (getTrack().id, CLIENT_ID)
+    return STREAM_URL
+
+
 # check if the url provided is a valid SoundCloud link
 def isValid(url):
     if "soundcloud.com" in url:
@@ -47,6 +55,13 @@ def isValid(url):
     print("You did not provide a valid SoundCloud url. Please run again with a valid url")
     return False
     exit(0)
+
+
+# check if url provided is a valid SoundCloud playlist link
+def isPlayList(url):
+    if "soundcloud.com" and "/sets/" in url:
+        return True
+    return False
 
 
 # displays info regarding the url provided. This is completely optional and will not affect the outcome of the downloaded file
@@ -63,11 +78,14 @@ def printInfo():
     print("##################################")
 
 
-# creates the stream url from the link provided. This url is then used later to download the song
-def makeStreamURL():
-    global STREAM_URL
-    STREAM_URL += "http://api.soundcloud.com/tracks/%s/stream?client_id=%s" % (getTrack().id, CLIENT_ID)
-    return STREAM_URL
+# adds url of each song in playlist to a list that is used for downloading
+def getSongURLFromSet(set):
+    global SONG_TO_DOWNLOAD
+    playlistID = getTrack().id
+    playlist = client.get('/playlists/%s' % (playlistID))
+    for song in playlist.tracks:
+        url = song["permalink_url"]
+        URLS_TO_DOWNLOAD.append(url)
 
 
 # applies ID3 tags and artwork to the mp3 file based on what is provided from SoundCloud
@@ -103,32 +121,42 @@ def addTags(file):
         print(e)
 
 
-# creates save destination if that directory doesn't exist. Proceeds to download the audio file
-def download():
+# creates save destination if that directory doesn't exist. Proceeds to download the audio file(s)
+def downloadSongs(songs):
+    global SONG_TO_DOWNLOAD
+    i = 1
     if not os.path.exists(FOLDER_LOCATION):
         os.makedirs(FOLDER_LOCATION)
     os.chdir(FOLDER_LOCATION)
-    # path = os.path.join(FOLDER_LOCATION, setTrack().user["username"] + " - " + setTrack().title + ".mp3") #will add username of who uploaded the track to the name of the file
-    path = os.path.join(FOLDER_LOCATION, getTrack().title + ".mp3")
-    if os.path.isfile(path):
-        print("Skipped. This file already exists")
-    else:
-        try:
-            print("Starting download")
-            urllib.request.urlretrieve(STREAM_URL, path)
-            addTags(path)
-            print("Download complete!")
-        except:
-            print("Download failed.")
-            print(FAILED_MESSAGE)
+    for song in songs:
+        SONG_TO_DOWNLOAD = song
+        path = os.path.join(FOLDER_LOCATION, getTrack().title + ".mp3")
+        if os.path.isfile(path):
+            print("Skipped. This file already exists")
+        else:
+            try:
+                makeStreamURL()
+                print("Starting download: Song " + str(i) + " of " + str(len(URLS_TO_DOWNLOAD)))
+                urllib.request.urlretrieve(STREAM_URL, path)
+                addTags(path)
+                i+=1
+            except:
+                print("Download failed.")
+                print(FAILED_MESSAGE)
+                i+=1
+    print("Download complete!")
 
 
 if __name__ == "__main__":
-    if (len(sys.argv) == 2):  #link was provided
+    if (len(sys.argv) == 2):  # a link was provided
         SONG_TO_DOWNLOAD = sys.argv[1]
         if isValid(SONG_TO_DOWNLOAD):
+            if isPlayList(SONG_TO_DOWNLOAD):
+                getSongURLFromSet(SONG_TO_DOWNLOAD)
+                downloadSongs(URLS_TO_DOWNLOAD)
+                exit(0)
             # printInfo() #optional
-            makeStreamURL()
-            download()
+            URLS_TO_DOWNLOAD.append(SONG_TO_DOWNLOAD)
+            downloadSongs(URLS_TO_DOWNLOAD)
     else:
         print(HELP_MESSAGE)
