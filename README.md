@@ -20,7 +20,7 @@ Easily download any SoundCloud track even if a download link is not provided.
 
   *~~Add proper mp3 tags and artwork that is provided via SoundCloud~~
   
-  *Allow for a playlist to be downloaded
+  *~~Allow for a playlist to be downloaded~~
   
   *Progress bar of download
 
