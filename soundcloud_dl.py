@@ -16,7 +16,7 @@ URLS_TO_DOWNLOAD = []
 HELP_MESSAGE = '''
 * SoundCloud Downloader *
 
-* Only one song can be downloaded at a time. Please use the following format: *
+* Please use the following format: *
 ----------------------------------------------------
 * python3 soundcloud_dl.py [soundcloud url] *
 ----------------------------------------------------
