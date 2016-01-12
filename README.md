@@ -22,8 +22,6 @@ Easily download any SoundCloud track even if a download link is not provided.
   
   *Allow for a playlist to be downloaded
   
-  *Allow a certain number of a user's reposted and favorited tracks to be downloaded
-  
   *Progress bar of download
 
 ----
