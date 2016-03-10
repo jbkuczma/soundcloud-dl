@@ -124,6 +124,7 @@ def addTags(file):
 def getFileSize():
     return getTrack().original_content_size
 
+
 # creates save destination if that directory doesn't exist. Proceeds to download the audio file(s)
 def downloadSongs(songs):
     global SONG_TO_DOWNLOAD
