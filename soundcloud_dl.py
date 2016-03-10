@@ -120,6 +120,9 @@ def addTags(file):
     except Exception as e:
         print(e)
 
+#gets file size of song to be downloaded
+def getFileSize():
+    return getTrack().original_content_size
 
 # creates save destination if that directory doesn't exist. Proceeds to download the audio file(s)
 def downloadSongs(songs):
