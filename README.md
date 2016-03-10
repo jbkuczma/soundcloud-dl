@@ -25,6 +25,6 @@ Easily download any SoundCloud track even if a download link is not provided.
   *Progress bar of download
 
 ----
-***This was developed entirely for educational purposes.***
+***This was developed entirely for educational purposes and I am not responsible for anyone that chooses to use this.***
 
   
