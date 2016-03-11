@@ -1,4 +1,3 @@
-import urllib
 import soundcloud
 import os
 import sys
@@ -6,6 +5,7 @@ import requests
 from mutagen.mp3 import MP3, EasyMP3
 from mutagen.id3 import ID3 as OldID3
 from mutagen.id3 import APIC
+from clint.textui import progress
 
 CLIENT_ID = "***" #your client ID
 FOLDER_LOCATION = "***" #where you want the file saved to
@@ -141,7 +141,13 @@ def downloadSongs(songs):
             try:
                 makeStreamURL()
                 print("Starting download: Song " + str(i) + " of " + str(len(URLS_TO_DOWNLOAD)))
-                urllib.request.urlretrieve(STREAM_URL, path)
+                r = requests.get(STREAM_URL, stream=True)
+                with open(path, 'wb') as f:
+                    fileSize = int(r.headers.get('content-length'))
+                    for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(fileSize/1024)+1):
+                        if chunk:
+                            f.write(chunk)
+                            f.flush()
                 addTags(path)
                 i+=1
             except:
