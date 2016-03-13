@@ -22,7 +22,7 @@ Easily download any SoundCloud track even if a download link is not provided.
   
   *~~Allow for a playlist to be downloaded~~
   
-  *Progress bar of download
+  *~~Progress bar of download~~
 
 ----
 ***This was developed entirely for educational purposes and I am not responsible for anyone that chooses to use this.***
